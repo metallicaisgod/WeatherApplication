@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="4dp"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/secondary80"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/dayForecastTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today"
+            android:textAppearance="@style/DayForecast"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/conditionForecastTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="@style/ConditionForecast"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dayForecastTextView"
+            android:maxLines="1"
+            android:maxLength="25"
+            android:ellipsize="end"
+            tools:text="Cloudy" />
+
+        <ImageView
+            android:id="@+id/conditionForecastImageView"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:src="@drawable/day_116"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="4dp"
+            android:layout_height="54dp"
+            android:layout_marginEnd="16dp"
+            android:background="#4B454D"
+            app:layout_constraintEnd_toStartOf="@+id/conditionForecastImageView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tempMaxForecastTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/DayForecast"
+            app:layout_constraintEnd_toStartOf="@+id/divider2"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="20°" />
+
+        <TextView
+            android:id="@+id/tempMinForecastTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/DayForecast"
+            app:layout_constraintEnd_toStartOf="@+id/divider2"
+            app:layout_constraintTop_toBottomOf="@+id/dayForecastTextView"
+            tools:text="18°" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>

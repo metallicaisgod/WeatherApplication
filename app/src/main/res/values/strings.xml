@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="today">Today</string>
+    <string name="_10_days">10 days</string>
+    <string name="moscow_russia" translatable="false">Moscow, Russia</string>
+    <string name="graduses" translatable="false">3°</string>
+    <string name="wind_speed">Wind speed</string>
+    <string name="humidity">Humidity</string>
+    <string name="_61" translatable="false">61%</string>
+    <string name="pressure">Pressure</string>
+    <string name="_720_hpa" translatable="false">720 hpa</string>
+
+    <string name="city_country" translatable="false">%1$s, %2$s</string>
+    <string name="degrees" translatable="false">%1$d°</string>
+    <string name="feels_like">Feels like %1$d°</string>
+    <string name="wind_speed_ms">"%1$s m/s"</string>
+    <string name="chance_of_rain" translatable="false">"%1$d%%"</string>
+    <string name="pressure_mmhg">"%1$d mmHg"</string>
+    <string name="fallout">Fallout</string>
+    <string name="uv_index">UV index</string>
+    <string name="hourly_forecast">Hourly forecast</string>
+    <string name="chance_of_rain_title">Chance of rain</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+
+
+</resources>

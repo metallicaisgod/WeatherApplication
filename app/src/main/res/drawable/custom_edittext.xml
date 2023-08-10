@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--the outline box turns to green when the edit text is in focus-->
+    <item android:state_enabled="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="14dp" />
+            <solid  android:color="@color/secondary80" />
+            <stroke  android:width="2dp" android:color="@color/progress" />
+        </shape>
+    </item>
+
+</selector>

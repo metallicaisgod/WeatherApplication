@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary80">#E0B6FF</color>
+    <color name="secondary80">#D0BCFF</color>
+    <color name="progress">#8A20D5</color>
+    <color name="progress_end">#FF8A20D5</color>
+    <color name="progress_start">#008A20D5</color>
+    <color name="progress_center">#888A20D5</color>
+</resources>

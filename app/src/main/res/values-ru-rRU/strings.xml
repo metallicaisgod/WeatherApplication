@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="today">Сегодня</string>
+    <string name="_10_days">10 Дней</string>
+    <string name="wind_speed">Скор. ветра</string>
+    <string name="humidity">Влажность</string>
+    <string name="pressure">Давление</string>
+    <string name="feels_like">Ощущается как %1$d°</string>
+    <string name="wind_speed_ms">%1$s м/с</string>
+    <string name="pressure_mmhg">%1$d мрст</string>
+    <string name="fallout">Осадки</string>
+    <string name="uv_index">УФ индекс</string>
+    <string name="hourly_forecast">Почасовой прогноз</string>
+    <string name="chance_of_rain_title">Шанс осадков</string>
+    <string name="sunrise">Восход</string>
+    <string name="sunset">Закат</string>
+</resources>
