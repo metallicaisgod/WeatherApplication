@@ -22,6 +22,15 @@
     <string name="chance_of_rain_title">Chance of rain</string>
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
+    <string name="wind_image_view" translatable="false">Wind image view</string>
+    <string name="fallout_imageview" translatable="false">Fallout imageview</string>
+    <string name="pressure_imageview" translatable="false">Pressure imageview</string>
+    <string name="uv_imageview" translatable="false">UV imageview</string>
+    <string name="hourly_forecast_imageview" translatable="false">Hourly forecast imageview</string>
+    <string name="fallout_chance_imageview" translatable="false">Fallout chance imageview</string>
+    <string name="sunrise_imageview" translatable="false">Sunrise imageview</string>
+    <string name="sunset_imageview" translatable="false">Sunset imageview</string>
+    <string name="condition_imageview" translatable="false">Condition imageview</string>
 
 
 </resources>
