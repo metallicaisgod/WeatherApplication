@@ -1,6 +1,6 @@
 package com.example.myapplication.presentation
 
-data class RainChanceHourly(
+data class FalloutChanceHourly(
     val time: String,
     val chance: Int
 )

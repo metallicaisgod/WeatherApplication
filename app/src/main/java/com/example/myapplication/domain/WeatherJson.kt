@@ -106,6 +106,9 @@ data class DayJson(
     @SerializedName("daily_chance_of_rain")
     @Expose
     val daily_chance_of_rain: Int,
+    @SerializedName("daily_chance_of_snow")
+    @Expose
+    val daily_chance_of_snow: Int,
     @SerializedName("condition")
     @Expose
     val condition: ConditionJson,
@@ -138,5 +141,8 @@ data class HourJson(
     val condition: ConditionJson,
     @SerializedName("chance_of_rain")
     @Expose
-    val chance_of_rain: Int
+    val chance_of_rain: Int,
+    @SerializedName("chance_of_snow")
+    @Expose
+    val chance_of_snow: Int
 )

@@ -10,13 +10,16 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.R
 import com.example.myapplication.data.ConditionFromFileJson
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.domain.HourJson
 import com.example.myapplication.domain.WeatherJson
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -33,6 +36,7 @@ import java.io.InputStreamReader
 import java.io.StringWriter
 import java.io.Writer
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -86,6 +90,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+            val window = window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         initUi()
         observeViewModel()
 
@@ -96,8 +102,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             requestLocationPermissions()
         }
-
-        //viewModel.getWeatherByLocation("Moscow")
     }
 
     private fun initLocationObjects() {
@@ -113,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
                 super.onLocationResult(p0)
-                if(currentLocation != null) {
+                if (currentLocation != null) {
                     if (abs(p0.lastLocation!!.longitude - currentLocation!!.longitude) < 0.01) {
                         currentLocation = p0.lastLocation!!
                         stopLocationUpdate()
@@ -132,8 +136,10 @@ class MainActivity : AppCompatActivity() {
 
         fusedLocationClient.removeLocationUpdates(locationCallback)
             .addOnCompleteListener {
-                val lon = currentLocation!!.longitude //DecimalFormat("#.####").format(currentLocation!!.longitude)
-                val lat = currentLocation!!.latitude//DecimalFormat("#.####").format(currentLocation!!.latitude)
+                val lon =
+                    currentLocation!!.longitude //DecimalFormat("#.####").format(currentLocation!!.longitude)
+                val lat =
+                    currentLocation!!.latitude//DecimalFormat("#.####").format(currentLocation!!.latitude)
                 Log.d("MainActivity", "$lat,$lon")
                 viewModel.getWeatherByLocation("$lat,$lon")
             }
@@ -208,6 +214,10 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.isEmpty()) {
                 Log.d("onRequestPermissions", "Request was cancelled")
+                binding.progressBar.visibility = View.GONE
+                binding.motionLayout.visibility = View.VISIBLE
+                Toast.makeText(this, "Use search button for find location", Toast.LENGTH_LONG)
+                    .show()
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                 grantResults[1] == PackageManager.PERMISSION_GRANTED
             ) {
@@ -317,7 +327,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getResId(resName: String, c: Class<*>): Int {
+    private fun getResId(resName: String, c: Class<*>): Int {
         return try {
             val idField = c.getDeclaredField(resName)
             idField.getInt(idField)
@@ -337,7 +347,8 @@ class MainActivity : AppCompatActivity() {
                 weatherJson.location.name,
                 weatherJson.location.country
             )
-            degreesTextView.text = getString(R.string.degrees, weatherJson.current.temp_c.roundToInt())
+            degreesTextView.text =
+                getString(R.string.degrees, weatherJson.current.temp_c.roundToInt())
             feelsLikeTextView.text =
                 getString(R.string.feels_like, weatherJson.current.feelslike_c.roundToInt())
 
@@ -352,7 +363,7 @@ class MainActivity : AppCompatActivity() {
             val sunsetEpoch =
                 LocalDateTime.parse(sunset, timeFormatter).atZone(zoneId).toEpochSecond()
 
-            val day_or_night =
+            val dayOrNight =
                 getDayOrNight(weatherJson.current.last_updated_epoch, sunriseEpoch, sunsetEpoch)
 
             val condition = conditionsCodes.first {
@@ -362,48 +373,58 @@ class MainActivity : AppCompatActivity() {
                 it.lang_iso == languageCode
             }
             conditionTextView.text =
-                if (day_or_night == "day") languageJson.day_text else languageJson.night_text
+                if (dayOrNight == "day") languageJson.day_text else languageJson.night_text
 
             conditionImageView.setImageResource(
-                getConditionIconId(weatherJson.current.condition.code, day_or_night)
+                getConditionIconId(weatherJson.current.condition.code, dayOrNight)
             )
 
             dateTimeTextView.text = LocalDateTime
                 .parse(weatherJson.current.last_updated, fromDateTimeFormatter)
                 .format(toDateTimeFormatter)
 
-
-            val windSpeedMS = DecimalFormat("#.#").format(weatherJson.current.wind_kph / 3.6)
+            val decimalFormatSymbols = DecimalFormatSymbols.getInstance()
+            decimalFormatSymbols.decimalSeparator = '.'
+            val windSpeedMS = DecimalFormat("#.#", decimalFormatSymbols).format(weatherJson.current.wind_kph / 3.6)
             windSpeedTextView.text = getString(R.string.wind_speed_ms, windSpeedMS)
 
+            val dailyChanceOfRain = weatherJson.forecast.forecastdays[0].day.daily_chance_of_rain
+            val dailyChanceOfSnow = weatherJson.forecast.forecastdays[0].day.daily_chance_of_snow
+            val falloutChance = if(dailyChanceOfRain > 0){
+                dailyChanceOfRain
+            } else if(dailyChanceOfSnow > 0){
+                dailyChanceOfSnow
+            } else {
+                0
+            }
             falloutTextView.text = getString(
                 R.string.chance_of_rain,
-                weatherJson.forecast.forecastdays[0].day.daily_chance_of_rain
+                falloutChance
             )
 
             val pressureMMHg = (weatherJson.current.pressure_mb * 0.75006).roundToInt()
             pressureTextView.text = getString(R.string.pressure_mmhg, pressureMMHg)
 
-            val uv = DecimalFormat("#.#").format(weatherJson.current.uv)
-            uvTextView.text = uv
+            uvTextView.text = weatherJson.current.uv.toString()
 
             hourlyWeatherAdapter.submitList(getHourlyForecast(weatherJson))
 
-            val rainChanceList = getRainChanceHourly(weatherJson)
-            rainTime1TextView.text = rainChanceList[0].time
-            rainChance1progressBar.progress = rainChanceList[0].chance
-            rainChance1TextView.text = getString(R.string.degrees,rainChanceList[0].chance)
-            rainTime2TextView.text = rainChanceList[1].time
-            rainChance2progressBar.progress = rainChanceList[1].chance
-            rainChance2TextView.text = getString(R.string.degrees,rainChanceList[1].chance)
-            rainTime3TextView.text = rainChanceList[2].time
-            rainChance3progressBar.progress = rainChanceList[2].chance
-            rainChance3TextView.text = getString(R.string.degrees,rainChanceList[2].chance)
-            rainTime4TextView.text = rainChanceList[3].time
-            rainChance4progressBar.progress = rainChanceList[3].chance
-            rainChance4TextView.text = getString(R.string.degrees,rainChanceList[3].chance)
+            val falloutChanceList = getFalloutChanceHourly(weatherJson)
+            falloutTime1TextView.text = falloutChanceList[0].time
+            falloutChance1ProgressBar.progress = falloutChanceList[0].chance
+            falloutChance1TextView.text = getString(R.string.chance_of_rain, falloutChanceList[0].chance)
+            falloutTime2TextView.text = falloutChanceList[1].time
+            falloutChance2ProgressBar.progress = falloutChanceList[1].chance
+            falloutChance2TextView.text = getString(R.string.chance_of_rain, falloutChanceList[1].chance)
+            falloutTime3TextView.text = falloutChanceList[2].time
+            falloutChance3ProgressBar.progress = falloutChanceList[2].chance
+            falloutChance3TextView.text = getString(R.string.chance_of_rain, falloutChanceList[2].chance)
+            falloutTime4TextView.text = falloutChanceList[3].time
+            falloutChance4ProgressBar.progress = falloutChanceList[3].chance
+            falloutChance4TextView.text = getString(R.string.chance_of_rain, falloutChanceList[3].chance)
 
-            sunRiseTextView.text = LocalDateTime.parse(sunrise, timeFormatter).format(toTimeFormatter)
+            sunRiseTextView.text =
+                LocalDateTime.parse(sunrise, timeFormatter).format(toTimeFormatter)
             sunSetTextView.text = LocalDateTime.parse(sunset, timeFormatter).format(toTimeFormatter)
 
             daysForecastAdapter.submitList(getDayForecastList(weatherJson))
@@ -441,13 +462,13 @@ class MainActivity : AppCompatActivity() {
         val sunsetTodayEpoch =
             LocalDateTime.parse(sunsetToday, timeFormatter).atZone(zoneId).toEpochSecond()
 
-        val day_or_night = getDayOrNight(
+        val dayOrNight = getDayOrNight(
             weatherJson.current.last_updated_epoch,
             sunriseTodayEpoch,
             sunsetTodayEpoch
         )
         val currentConditionIconId =
-            getConditionIconId(weatherJson.current.condition.code, day_or_night)
+            getConditionIconId(weatherJson.current.condition.code, dayOrNight)
 
         val currentHour = HourForecast(
             time = "Now",
@@ -516,9 +537,9 @@ class MainActivity : AppCompatActivity() {
         return resultList.toList()
     }
 
-    private fun getRainChanceHourly(weatherJson: WeatherJson): List<RainChanceHourly> {
+    private fun getFalloutChanceHourly(weatherJson: WeatherJson): List<FalloutChanceHourly> {
 
-        val resultList = mutableListOf<RainChanceHourly>()
+        val resultList = mutableListOf<FalloutChanceHourly>()
 
         val todayHours = weatherJson.forecast.forecastdays[0].hour
         val startIdx = todayHours.indexOfFirst {
@@ -526,43 +547,54 @@ class MainActivity : AppCompatActivity() {
         }
 
         todayHours.forEachIndexed { index, hourJson ->
-            if(index >= startIdx) {
+            if (index >= startIdx) {
                 val time = LocalDateTime
                     .parse(hourJson.time, fromDateTimeFormatter)
                     .format(toTimeFormatter)
-                val rainChanceHourly = RainChanceHourly(
+                val falloutChanceHourly = FalloutChanceHourly(
                     time = time,
-                    chance = hourJson.chance_of_rain
+                    chance = getFalloutChance(hourJson)
                 )
-                resultList.add(rainChanceHourly)
+                resultList.add(falloutChanceHourly)
             }
         }
 
-        if(resultList.count() < 4){
+        if (resultList.count() < 4) {
             val tomorrowHours = weatherJson.forecast.forecastdays[1].hour
             for (index in 0 until 4 - resultList.count()) {
                 val hourJson = tomorrowHours[index]
                 val time = LocalDateTime
                     .parse(hourJson.time, fromDateTimeFormatter)
                     .format(toTimeFormatter)
-                val rainChanceHourly = RainChanceHourly(
+                val falloutChanceHourly = FalloutChanceHourly(
                     time = time,
-                    chance = hourJson.chance_of_rain
+                    chance = getFalloutChance(hourJson)
                 )
-                resultList.add(rainChanceHourly)
+                resultList.add(falloutChanceHourly)
             }
         }
         return resultList.toList()
     }
 
-    private fun getDayForecastList(weatherJson: WeatherJson): List<DayForecast>{
+    private fun getFalloutChance(hourJson: HourJson): Int {
+        val falloutChance = if (hourJson.chance_of_rain > 0) {
+            hourJson.chance_of_rain
+        } else if (hourJson.chance_of_snow > 0) {
+            hourJson.chance_of_snow
+        } else {
+            0
+        }
+        return falloutChance
+    }
+
+    private fun getDayForecastList(weatherJson: WeatherJson): List<DayForecast> {
 
         val resultList = mutableListOf<DayForecast>()
 
         val daysForecastList = weatherJson.forecast.forecastdays
 
         daysForecastList.forEachIndexed { index, dayWeatherJson ->
-            val dateForecast = if(index == 0) {
+            val dateForecast = if (index == 0) {
                 getString(R.string.today)
             } else {
                 LocalDate
@@ -579,8 +611,8 @@ class MainActivity : AppCompatActivity() {
             }
             val conditionForecast = languageJson.day_text
             val conditionIconId = getConditionIconId(condition.code, "day")
-            val maxTemp = getString(R.string.degrees,dayWeatherJson.day.maxtemp_c.roundToInt())
-            val minTemp = getString(R.string.degrees,dayWeatherJson.day.mintemp_c.roundToInt())
+            val maxTemp = getString(R.string.degrees, dayWeatherJson.day.maxtemp_c.roundToInt())
+            val minTemp = getString(R.string.degrees, dayWeatherJson.day.mintemp_c.roundToInt())
 
             val dayForecast = DayForecast(
                 day = dateForecast,

@@ -12,7 +12,7 @@
     <string name="fallout">Осадки</string>
     <string name="uv_index">УФ индекс</string>
     <string name="hourly_forecast">Почасовой прогноз</string>
-    <string name="chance_of_rain_title">Шанс осадков</string>
+    <string name="chance_of_rain_title">Вероятность осадков</string>
     <string name="sunrise">Восход</string>
     <string name="sunset">Закат</string>
 </resources>

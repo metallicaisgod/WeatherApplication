@@ -65,13 +65,7 @@
         </Constraint>
 
         <Constraint
-            android:id="@+id/cityNameWithCountry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="23dp"
-            android:layout_marginTop="16dp"
-            motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toTopOf="parent">
+            android:id="@+id/cityNameWithCountry">
             <CustomAttribute
                 motion:attributeName="textColor"
                 motion:customColorValue="@color/white" />
@@ -112,6 +106,7 @@
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toBottomOf="@+id/divider"
             motion:visibilityMode="ignore"/>
+
         <Constraint android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -126,7 +121,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="23dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="30dp"
             android:layout_marginEnd="60dp"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
@@ -166,7 +161,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="80dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="6dp"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toBottomOf="@+id/cityNameWithCountry">
             <CustomAttribute
@@ -180,7 +175,7 @@
             android:id="@+id/conditionImageView"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="6dp"
             android:layout_marginEnd="70dp"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintTop_toBottomOf="@+id/searchImage" />
@@ -197,13 +192,7 @@
                 motion:customColorValue="@color/black" />
         </Constraint>
         <Constraint
-            android:id="@+id/cityNameWithCountry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="23dp"
-            android:layout_marginTop="16dp"
-            motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toTopOf="parent">
+            android:id="@+id/cityNameWithCountry">
             <CustomAttribute
                 motion:attributeName="textColor"
                 motion:customColorValue="@color/black" />
@@ -249,7 +238,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="23dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="30dp"
             android:layout_marginEnd="60dp"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toTopOf="parent"

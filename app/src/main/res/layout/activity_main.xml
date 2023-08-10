@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:indeterminateDrawable="@drawable/spinner_ring"
@@ -21,7 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F6EDFF"
-        android:clipToOutline="true"
         android:visibility="gone"
         app:layoutDescription="@xml/activity_main_scene">
 
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="23dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:text="@string/moscow_russia"
             android:textColor="@color/white"
             android:textSize="22sp"
@@ -62,7 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="23dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="30dp"
             android:layout_marginEnd="60dp"
             android:background="@drawable/custom_edittext"
             android:textSize="22sp"
@@ -70,13 +70,16 @@
             android:paddingVertical="4dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:inputType="text"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
 
         <androidx.constraintlayout.utils.widget.ImageFilterView
             android:id="@+id/searchImage"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="36dp"
             android:layout_marginEnd="23dp"
             android:src="@drawable/search_24"
             app:altSrc="@drawable/search_24_black"
@@ -91,7 +94,7 @@
             android:layout_marginTop="14dp"
             android:layout_marginEnd="23dp"
             android:gravity="end"
-            android:text="Moderate or heavy rain in area with thunder"
+            tools:text="Moderate or heavy rain in area with thunder"
             android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +107,7 @@
             android:layout_marginStart="23dp"
             android:layout_marginBottom="16dp"
             android:gravity="end"
-            android:text="January 18, 16:14"
+            tools:text="January 18, 16:14"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
@@ -116,7 +119,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="23dp"
             android:layout_marginTop="70dp"
-            android:text="30°"
+            tools:text="30°"
             android:textColor="@color/white"
             android:textSize="30sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -127,7 +130,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:text="Feels like 4°"
+            tools:text="Feels like 4°"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@+id/degreesTextView"
@@ -141,7 +144,8 @@
             android:layout_marginEnd="23dp"
             android:src="@drawable/day_113"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchImage" />
+            app:layout_constraintTop_toBottomOf="@+id/searchImage"
+            android:contentDescription="@string/condition_imageview" />
 
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -246,7 +250,8 @@
                     android:layout_marginTop="19dp"
                     android:src="@drawable/wind"
                     app:layout_constraintStart_toStartOf="@+id/windBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@+id/windBackgroundImageView" />
+                    app:layout_constraintTop_toTopOf="@+id/windBackgroundImageView"
+                    android:contentDescription="@string/wind_image_view" />
 
 
                 <TextView
@@ -265,7 +270,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="33dp"
-                    android:text="12m/s"
+                    tools:text="12m/s"
                     android:textAppearance="@style/Info"
                     app:layout_constraintStart_toEndOf="@+id/windImageView"
                     app:layout_constraintTop_toTopOf="@+id/windBackgroundImageView" />
@@ -293,7 +298,8 @@
                     android:padding="5dp"
                     android:src="@drawable/rainy"
                     app:layout_constraintStart_toStartOf="@+id/falloutBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@+id/falloutBackgroundImageView" />
+                    app:layout_constraintTop_toTopOf="@+id/falloutBackgroundImageView"
+                    android:contentDescription="@string/fallout_imageview" />
 
 
                 <TextView
@@ -340,8 +346,8 @@
                     android:padding="5dp"
                     android:src="@drawable/waves"
                     app:layout_constraintStart_toStartOf="@+id/pressureBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@+id/pressureBackgroundImageView" />
-
+                    app:layout_constraintTop_toTopOf="@+id/pressureBackgroundImageView"
+                    android:contentDescription="@string/pressure_imageview" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -387,8 +393,8 @@
                     android:padding="5dp"
                     android:src="@drawable/uv_index"
                     app:layout_constraintStart_toStartOf="@+id/uvBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@+id/uvBackgroundImageView" />
-
+                    app:layout_constraintTop_toTopOf="@+id/uvBackgroundImageView"
+                    android:contentDescription="@string/uv_imageview" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -406,7 +412,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="33dp"
-                    android:text="2,3"
+                    tools:text="2,3"
                     android:textAppearance="@style/Info"
                     app:layout_constraintStart_toEndOf="@+id/uvImageView"
                     app:layout_constraintTop_toTopOf="@+id/uvBackgroundImageView" />
@@ -432,7 +438,8 @@
                     android:layout_marginTop="12dp"
                     android:src="@drawable/hourly_forecast"
                     app:layout_constraintStart_toStartOf="@+id/hourlyForecastBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@+id/hourlyForecastBackgroundImageView" />
+                    app:layout_constraintTop_toTopOf="@+id/hourlyForecastBackgroundImageView"
+                    android:contentDescription="@string/hourly_forecast_imageview" />
 
                 <TextView
                     android:id="@+id/textView3"
@@ -475,7 +482,7 @@
                     app:shapeAppearance="@style/ShapeAppearance.CircularBorderForOthers" />
 
                 <ImageView
-                    android:id="@+id/chanceRainImageView"
+                    android:id="@+id/chanceFalloutImageView"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_marginStart="20dp"
@@ -484,7 +491,8 @@
                     android:padding="5dp"
                     android:src="@drawable/rainy"
                     app:layout_constraintStart_toStartOf="@+id/chanceRainBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@+id/chanceRainBackgroundImageView" />
+                    app:layout_constraintTop_toTopOf="@+id/chanceRainBackgroundImageView"
+                    android:contentDescription="@string/fallout_chance_imageview" />
 
                 <TextView
                     android:id="@+id/textView4"
@@ -494,23 +502,23 @@
                     android:layout_marginTop="15dp"
                     android:text="@string/chance_of_rain_title"
                     android:textAppearance="@style/Subhead"
-                    app:layout_constraintStart_toEndOf="@+id/chanceRainImageView"
+                    app:layout_constraintStart_toEndOf="@+id/chanceFalloutImageView"
                     app:layout_constraintTop_toTopOf="@+id/chanceRainBackgroundImageView" />
 
                 <TextView
-                    android:id="@+id/rainTime1TextView"
+                    android:id="@+id/fallout_time_1_text_view"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="60dp"
                     android:gravity="end"
-                    android:text="7 PM"
+                    tools:text="7 PM"
                     android:textAppearance="@style/RainChanceText"
                     app:layout_constraintStart_toStartOf="@+id/chanceRainBackgroundImageView"
                     app:layout_constraintTop_toTopOf="@+id/chanceRainBackgroundImageView" />
 
                 <ProgressBar
-                    android:id="@+id/rainChance1progressBar"
+                    android:id="@+id/fallout_chance_1_progress_bar"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -520,35 +528,35 @@
                     android:max="100"
                     android:progress="27"
                     android:progressDrawable="@drawable/progress_bar_style"
-                    app:layout_constraintEnd_toStartOf="@+id/rainChance1TextView"
-                    app:layout_constraintStart_toEndOf="@+id/rainTime1TextView"
-                    app:layout_constraintTop_toTopOf="@+id/rainTime1TextView" />
+                    app:layout_constraintEnd_toStartOf="@+id/fallout_chance_1_text_view"
+                    app:layout_constraintStart_toEndOf="@+id/fallout_time_1_text_view"
+                    app:layout_constraintTop_toTopOf="@+id/fallout_time_1_text_view" />
 
                 <TextView
-                    android:id="@+id/rainChance1TextView"
+                    android:id="@+id/fallout_chance_1_text_view"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="6dp"
                     android:gravity="start"
-                    android:text="27%"
+                    tools:text="27%"
                     android:textAppearance="@style/RainChanceText"
                     app:layout_constraintEnd_toEndOf="@+id/chanceRainBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@id/rainTime1TextView" />
+                    app:layout_constraintTop_toTopOf="@id/fallout_time_1_text_view" />
 
                 <TextView
-                    android:id="@+id/rainTime2TextView"
+                    android:id="@+id/fallout_time_2_text_view"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="10dp"
                     android:gravity="end"
-                    android:text="8 PM"
+                    tools:text="8 PM"
                     android:textAppearance="@style/RainChanceText"
                     app:layout_constraintStart_toStartOf="@+id/chanceRainBackgroundImageView"
-                    app:layout_constraintTop_toBottomOf="@+id/rainTime1TextView" />
+                    app:layout_constraintTop_toBottomOf="@+id/fallout_time_1_text_view" />
 
                 <ProgressBar
-                    android:id="@+id/rainChance2progressBar"
+                    android:id="@+id/fallout_chance_2_progress_bar"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -558,35 +566,35 @@
                     android:max="100"
                     android:progress="44"
                     android:progressDrawable="@drawable/progress_bar_style"
-                    app:layout_constraintEnd_toStartOf="@+id/rainChance2TextView"
-                    app:layout_constraintStart_toEndOf="@+id/rainTime2TextView"
-                    app:layout_constraintTop_toTopOf="@+id/rainTime2TextView" />
+                    app:layout_constraintEnd_toStartOf="@+id/fallout_chance_2_text_view"
+                    app:layout_constraintStart_toEndOf="@+id/fallout_time_2_text_view"
+                    app:layout_constraintTop_toTopOf="@+id/fallout_time_2_text_view" />
 
                 <TextView
-                    android:id="@+id/rainChance2TextView"
+                    android:id="@+id/fallout_chance_2_text_view"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="6dp"
                     android:gravity="start"
-                    android:text="44%"
+                    tools:text="44%"
                     android:textAppearance="@style/RainChanceText"
                     app:layout_constraintEnd_toEndOf="@+id/chanceRainBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@+id/rainTime2TextView" />
+                    app:layout_constraintTop_toTopOf="@+id/fallout_time_2_text_view" />
 
                 <TextView
-                    android:id="@+id/rainTime3TextView"
+                    android:id="@+id/fallout_time_3_text_view"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="10dp"
                     android:gravity="end"
-                    android:text="9 PM"
+                    tools:text="9 PM"
                     android:textAppearance="@style/RainChanceText"
                     app:layout_constraintStart_toStartOf="@+id/chanceRainBackgroundImageView"
-                    app:layout_constraintTop_toBottomOf="@+id/rainTime2TextView" />
+                    app:layout_constraintTop_toBottomOf="@+id/fallout_time_2_text_view" />
 
                 <ProgressBar
-                    android:id="@+id/rainChance3progressBar"
+                    android:id="@+id/fallout_chance_3_progress_bar"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -596,35 +604,35 @@
                     android:max="100"
                     android:progress="56"
                     android:progressDrawable="@drawable/progress_bar_style"
-                    app:layout_constraintEnd_toStartOf="@+id/rainChance3TextView"
-                    app:layout_constraintStart_toEndOf="@+id/rainTime3TextView"
-                    app:layout_constraintTop_toTopOf="@+id/rainTime3TextView" />
+                    app:layout_constraintEnd_toStartOf="@+id/fallout_chance_3_text_view"
+                    app:layout_constraintStart_toEndOf="@+id/fallout_time_3_text_view"
+                    app:layout_constraintTop_toTopOf="@+id/fallout_time_3_text_view" />
 
                 <TextView
-                    android:id="@+id/rainChance3TextView"
+                    android:id="@+id/fallout_chance_3_text_view"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="6dp"
                     android:gravity="start"
-                    android:text="56%"
+                    tools:text="56%"
                     android:textAppearance="@style/RainChanceText"
                     app:layout_constraintEnd_toEndOf="@+id/chanceRainBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@+id/rainTime3TextView" />
+                    app:layout_constraintTop_toTopOf="@+id/fallout_time_3_text_view" />
 
                 <TextView
-                    android:id="@+id/rainTime4TextView"
+                    android:id="@+id/fallout_time_4_text_view"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="10dp"
                     android:gravity="end"
-                    android:text="10 PM"
+                    tools:text="10 PM"
                     android:textAppearance="@style/RainChanceText"
                     app:layout_constraintStart_toStartOf="@+id/chanceRainBackgroundImageView"
-                    app:layout_constraintTop_toBottomOf="@+id/rainTime3TextView" />
+                    app:layout_constraintTop_toBottomOf="@+id/fallout_time_3_text_view" />
 
                 <ProgressBar
-                    android:id="@+id/rainChance4progressBar"
+                    android:id="@+id/fallout_chance_4_progress_bar"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -634,20 +642,20 @@
                     android:max="100"
                     android:progress="100"
                     android:progressDrawable="@drawable/progress_bar_style"
-                    app:layout_constraintEnd_toStartOf="@+id/rainChance4TextView"
-                    app:layout_constraintStart_toEndOf="@+id/rainTime4TextView"
-                    app:layout_constraintTop_toTopOf="@+id/rainTime4TextView" />
+                    app:layout_constraintEnd_toStartOf="@+id/fallout_chance_4_text_view"
+                    app:layout_constraintStart_toEndOf="@+id/fallout_time_4_text_view"
+                    app:layout_constraintTop_toTopOf="@+id/fallout_time_4_text_view" />
 
                 <TextView
-                    android:id="@+id/rainChance4TextView"
+                    android:id="@+id/fallout_chance_4_text_view"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="6dp"
                     android:gravity="start"
-                    android:text="100%"
+                    tools:text="100%"
                     android:textAppearance="@style/RainChanceText"
                     app:layout_constraintEnd_toEndOf="@+id/chanceRainBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@+id/rainTime4TextView" />
+                    app:layout_constraintTop_toTopOf="@+id/fallout_time_4_text_view" />
 
 
                 <com.google.android.material.imageview.ShapeableImageView
@@ -656,7 +664,6 @@
                     android:layout_height="65dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-
                     android:layout_marginEnd="8dp"
                     android:background="@color/secondary80"
                     app:layout_constraintEnd_toStartOf="@+id/sunSetBackgroundImageView"
@@ -674,7 +681,8 @@
                     android:layout_marginTop="19dp"
                     android:src="@drawable/sunrise"
                     app:layout_constraintStart_toStartOf="@+id/sunRiseBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@+id/sunRiseBackgroundImageView" />
+                    app:layout_constraintTop_toTopOf="@+id/sunRiseBackgroundImageView"
+                    android:contentDescription="@string/sunrise_imageview" />
 
 
                 <TextView
@@ -693,7 +701,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="33dp"
-                    android:text="4:20 AM"
+                    tools:text="4:20 AM"
                     android:textAppearance="@style/Info"
                     app:layout_constraintStart_toEndOf="@+id/sunRiseImageView"
                     app:layout_constraintTop_toTopOf="@+id/sunRiseBackgroundImageView" />
@@ -721,7 +729,8 @@
                     android:layout_marginTop="19dp"
                     android:src="@drawable/sunset"
                     app:layout_constraintStart_toStartOf="@+id/sunSetBackgroundImageView"
-                    app:layout_constraintTop_toTopOf="@+id/sunSetBackgroundImageView" />
+                    app:layout_constraintTop_toTopOf="@+id/sunSetBackgroundImageView"
+                    android:contentDescription="@string/sunset_imageview" />
 
 
                 <TextView
@@ -740,7 +749,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="33dp"
-                    android:text="4:20 PM"
+                    tools:text="4:20 PM"
                     android:textAppearance="@style/Info"
                     app:layout_constraintStart_toEndOf="@+id/sunSetImageView"
                     app:layout_constraintTop_toTopOf="@+id/sunSetBackgroundImageView" />
