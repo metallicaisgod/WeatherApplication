@@ -19,7 +19,7 @@
     <string name="fallout">Fallout</string>
     <string name="uv_index">UV index</string>
     <string name="hourly_forecast">Hourly forecast</string>
-    <string name="chance_of_rain_title">Chance of rain</string>
+    <string name="chance_of_rain_title">Chance of fallout</string>
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
     <string name="wind_image_view" translatable="false">Wind image view</string>
