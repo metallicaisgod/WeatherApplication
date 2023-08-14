@@ -34,5 +34,6 @@
     <string name="favourites">Favourites</string>
     <string name="place_name">Place Name</string>
     <string name="place_deleted">Location %1$s deleted from favourites</string>
+    <string name="now">Now</string>
 
 </resources>

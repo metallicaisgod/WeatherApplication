@@ -18,4 +18,5 @@
     <string name="favourites">Избранное</string>
     <string name="place_name">Имя места</string>
     <string name="place_deleted">Место %1$s удалено из избранного</string>
+    <string name="now">Сейчас</string>
 </resources>

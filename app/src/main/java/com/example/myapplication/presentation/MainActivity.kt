@@ -297,8 +297,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.placeStatusLivedata.observe(this) {
-            var srcResId = R.drawable.favorite_white
-            var srcAltResId = R.drawable.favorite_black
+            val srcResId: Int
+            val srcAltResId: Int
             when (it) {
                 is PlaceStatus.Favourite -> {
                     srcResId = R.drawable.favorite_fill_white
@@ -306,6 +306,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 is PlaceStatus.NotFavourite -> {
+                    srcResId = R.drawable.favorite_white
+                    srcAltResId = R.drawable.favorite_black
+                }
+
+                else -> {
                     srcResId = R.drawable.favorite_white
                     srcAltResId = R.drawable.favorite_black
                 }
@@ -559,7 +564,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.getConditionIconId(weatherJson.current.condition.code, dayOrNight)
 
         val currentHour = HourForecast(
-            time = "Now",
+            time = getString(R.string.now),
             conditionIcon = currentConditionIconId,
             temp = getString(R.string.degrees, weatherJson.current.temp_c.roundToInt())
         )
