@@ -31,6 +31,8 @@
     <string name="sunrise_imageview" translatable="false">Sunrise imageview</string>
     <string name="sunset_imageview" translatable="false">Sunset imageview</string>
     <string name="condition_imageview" translatable="false">Condition imageview</string>
-
+    <string name="favourites">Favourites</string>
+    <string name="place_name">Place Name</string>
+    <string name="place_deleted">Location %1$s deleted from favourites</string>
 
 </resources>

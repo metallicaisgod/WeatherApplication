@@ -15,4 +15,7 @@
     <string name="chance_of_rain_title">Вероятность осадков</string>
     <string name="sunrise">Восход</string>
     <string name="sunset">Закат</string>
+    <string name="favourites">Избранное</string>
+    <string name="place_name">Имя места</string>
+    <string name="place_deleted">Место %1$s удалено из избранного</string>
 </resources>

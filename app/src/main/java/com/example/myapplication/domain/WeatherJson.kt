@@ -22,6 +22,12 @@ data class LocationJson(
     @SerializedName("country")
     @Expose
     val country: String,
+    @SerializedName("lat")
+    @Expose
+    val lat: Float,
+    @SerializedName("lon")
+    @Expose
+    val lon: Float,
     @SerializedName("tz_id")
     @Expose
     val tz_id: String

@@ -64,8 +64,7 @@
                 motion:customColorValue="@color/white" />
         </Constraint>
 
-        <Constraint
-            android:id="@+id/cityNameWithCountry">
+        <Constraint android:id="@+id/cityNameWithCountry">
             <CustomAttribute
                 motion:attributeName="textColor"
                 motion:customColorValue="@color/white" />
@@ -88,7 +87,26 @@
             <CustomAttribute
                 motion:attributeName="crossfade"
                 motion:customFloatValue="0" />
+        </Constraint>
 
+        <Constraint android:id="@+id/favoriteImageView">
+            <CustomAttribute
+                motion:attributeName="crossfade"
+                motion:customFloatValue="0" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/locationImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            motion:layout_constraintStart_toEndOf="@+id/favoriteImageView"
+            motion:layout_constraintTop_toTopOf="@+id/cityNameWithCountry"
+            motion:layout_constraintBottom_toBottomOf="@+id/cityNameWithCountry"
+            motion:visibilityMode="ignore">
+            <CustomAttribute
+                motion:attributeName="crossfade"
+                motion:customFloatValue="0" />
         </Constraint>
 
         <Constraint android:id="@+id/feelsLikeTextView">
@@ -97,7 +115,8 @@
                 motion:customColorValue="@color/white" />
         </Constraint>
 
-        <Constraint android:id="@+id/forecastDayRecyclerView"
+        <Constraint
+            android:id="@+id/forecastDayRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             motion:layout_constraintBottom_toBottomOf="parent"
@@ -105,9 +124,10 @@
             motion:layout_constraintHorizontal_bias="0.0"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toBottomOf="@+id/divider"
-            motion:visibilityMode="ignore"/>
+            motion:visibilityMode="ignore" />
 
-        <Constraint android:id="@+id/scrollView"
+        <Constraint
+            android:id="@+id/favouritesRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             motion:layout_constraintBottom_toBottomOf="parent"
@@ -115,9 +135,21 @@
             motion:layout_constraintHorizontal_bias="0.0"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toBottomOf="@+id/divider"
-            motion:visibilityMode="ignore"/>
+            motion:visibilityMode="ignore" />
 
-        <Constraint android:id="@+id/searchEditText"
+        <Constraint
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/divider"
+            motion:visibilityMode="ignore" />
+
+        <Constraint
+            android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="23dp"
@@ -125,7 +157,7 @@
             android:layout_marginEnd="60dp"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
-            motion:visibilityMode="ignore"/>
+            motion:visibilityMode="ignore" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -191,8 +223,7 @@
                 motion:attributeName="textColor"
                 motion:customColorValue="@color/black" />
         </Constraint>
-        <Constraint
-            android:id="@+id/cityNameWithCountry">
+        <Constraint android:id="@+id/cityNameWithCountry">
             <CustomAttribute
                 motion:attributeName="textColor"
                 motion:customColorValue="@color/black" />
@@ -216,7 +247,28 @@
                 motion:customFloatValue="1" />
         </Constraint>
 
-        <Constraint android:id="@+id/forecastDayRecyclerView"
+        <Constraint android:id="@+id/favoriteImageView">
+            <CustomAttribute
+                motion:attributeName="crossfade"
+                motion:customFloatValue="1" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/locationImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            motion:layout_constraintStart_toEndOf="@+id/favoriteImageView"
+            motion:layout_constraintTop_toTopOf="@+id/cityNameWithCountry"
+            motion:layout_constraintBottom_toBottomOf="@+id/cityNameWithCountry"
+            motion:visibilityMode="ignore">
+            <CustomAttribute
+                motion:attributeName="crossfade"
+                motion:customFloatValue="1" />
+        </Constraint>
+
+        <Constraint
+            android:id="@+id/forecastDayRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             motion:layout_constraintBottom_toBottomOf="parent"
@@ -224,8 +276,10 @@
             motion:layout_constraintHorizontal_bias="0.0"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toBottomOf="@+id/divider"
-            motion:visibilityMode="ignore"/>
-        <Constraint android:id="@+id/scrollView"
+            motion:visibilityMode="ignore" />
+
+        <Constraint
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             motion:layout_constraintBottom_toBottomOf="parent"
@@ -233,8 +287,21 @@
             motion:layout_constraintHorizontal_bias="0.0"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toBottomOf="@+id/divider"
-            motion:visibilityMode="ignore"/>
-        <Constraint android:id="@+id/searchEditText"
+            motion:visibilityMode="ignore" />
+
+        <Constraint
+            android:id="@+id/favouritesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/divider"
+            motion:visibilityMode="ignore" />
+
+        <Constraint
+            android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="23dp"
@@ -242,6 +309,6 @@
             android:layout_marginEnd="60dp"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
-            motion:visibilityMode="ignore"/>
+            motion:visibilityMode="ignore" />
     </ConstraintSet>
 </MotionScene>

@@ -16,9 +16,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.data.ConditionFromFileJson
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.domain.FavouritePlace
 import com.example.myapplication.domain.HourJson
 import com.example.myapplication.domain.WeatherJson
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -30,11 +32,6 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import com.google.android.gms.location.SettingsClient
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.GsonBuilder
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.StringWriter
-import java.io.Writer
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.time.LocalDate
@@ -59,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         ViewModelProvider(this)[MainViewModel::class.java]
     }
 
-    private val conditionsCodes by lazy { getJsonObject(R.raw.conditions) }
+    private val conditionsCodes by lazy { viewModel.conditionsCodes }
 
 
     private val timeFormatter = DateTimeFormatter.ofPattern("uuuu-MM-ddhh:mm a")
@@ -76,6 +73,11 @@ class MainActivity : AppCompatActivity() {
     private val daysForecastAdapter by lazy {
         DaysForecastAdapter()
     }
+    private val favouritesAdapter by lazy {
+        FavouritesAdapter()
+    }
+
+    private lateinit var currentWeatherJson: WeatherJson
 
     private var searchMode = false
 
@@ -90,8 +92,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-            val window = window
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        val window = window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         initUi()
         observeViewModel()
 
@@ -142,6 +144,7 @@ class MainActivity : AppCompatActivity() {
                     currentLocation!!.latitude//DecimalFormat("#.####").format(currentLocation!!.latitude)
                 Log.d("MainActivity", "$lat,$lon")
                 viewModel.getWeatherByLocation("$lat,$lon")
+                binding.locationImageView.visibility = View.VISIBLE
             }
     }
 
@@ -264,6 +267,7 @@ class MainActivity : AppCompatActivity() {
                 is ApiState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.motionLayout.visibility = View.GONE
+                    setStartScreenState()
                 }
 
                 is ApiState.Failure -> {
@@ -275,9 +279,9 @@ class MainActivity : AppCompatActivity() {
 
                 is ApiState.Success -> {
                     //  binding.swipeRefresh.isRefreshing = false
-                    val weatherJson = it.data as WeatherJson
+                    currentWeatherJson = it.data as WeatherJson
                     // Log.d("Success", myObj.toString())
-                    embedWeatherJson(weatherJson)
+                    embedWeatherJson()
                     binding.progressBar.visibility = View.GONE
                     binding.motionLayout.visibility = View.VISIBLE
                 }
@@ -291,25 +295,61 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        viewModel.placeStatusLivedata.observe(this) {
+            var srcResId = R.drawable.favorite_white
+            var srcAltResId = R.drawable.favorite_black
+            when (it) {
+                is PlaceStatus.Favourite -> {
+                    srcResId = R.drawable.favorite_fill_white
+                    srcAltResId = R.drawable.favorite_fill_black
+                }
+
+                is PlaceStatus.NotFavourite -> {
+                    srcResId = R.drawable.favorite_white
+                    srcAltResId = R.drawable.favorite_black
+                }
+            }
+            binding.favoriteImageView.setImageResource(srcResId)
+            binding.favoriteImageView.setAltImageResource(srcAltResId)
+        }
+
+        viewModel.favouritePlacesLivedata.observe(this) {
+            favouritesAdapter.submitList(it)
+        }
     }
 
     private fun initUi() {
         binding.hourlyForecastRecyclerView.adapter = hourlyWeatherAdapter
         binding.forecastDayRecyclerView.adapter = daysForecastAdapter
+        binding.favouritesRecyclerView.adapter = favouritesAdapter
         binding.forecastDayRecyclerView.visibility = View.GONE
+        binding.favouritesRecyclerView.visibility = View.GONE
         binding.daysImageView.setOnClickListener {
             binding.daysImageView.setImageResource(R.color.primary80)
             binding.todayImageView.setImageResource(R.color.white)
-            binding.forecastDayRecyclerView.visibility = View.VISIBLE
+            binding.favouritesImageView.setImageResource(R.color.white)
             binding.scrollView.visibility = View.GONE
-            Log.d("MainActivity", "${binding.forecastDayRecyclerView.visibility}")
+            binding.favouritesRecyclerView.visibility = View.GONE
+            binding.forecastDayRecyclerView.visibility = View.VISIBLE
         }
         binding.todayImageView.setOnClickListener {
-            binding.daysImageView.setImageResource(R.color.white)
-            binding.todayImageView.setImageResource(R.color.primary80)
-            binding.forecastDayRecyclerView.visibility = View.GONE
-            binding.scrollView.visibility = View.VISIBLE
+            setStartScreenState()
         }
+        binding.favouritesImageView.setOnClickListener {
+            binding.daysImageView.setImageResource(R.color.white)
+            binding.todayImageView.setImageResource(R.color.white)
+            binding.favouritesImageView.setImageResource(R.color.primary80)
+            binding.forecastDayRecyclerView.visibility = View.GONE
+            binding.scrollView.visibility = View.GONE
+            binding.favouritesRecyclerView.visibility = View.VISIBLE
+        }
+
+        favouritesAdapter.onFavouritePlaceClickListener = {
+            viewModel.getWeatherByLocation("${it.latitude},${it.longitude}")
+            binding.locationImageView.visibility = View.GONE
+        }
+
         binding.searchImage.setOnClickListener {
             if (!searchMode) {
                 binding.searchEditText.text.clear()
@@ -320,40 +360,85 @@ class MainActivity : AppCompatActivity() {
                     .hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
                 binding.searchEditText.visibility = View.GONE
                 binding.searchEditText.clearFocus()
-
                 viewModel.getWeatherByLocation(binding.searchEditText.text.toString())
+                binding.locationImageView.visibility = View.GONE
                 searchMode = false
             }
         }
-    }
 
-    private fun getResId(resName: String, c: Class<*>): Int {
-        return try {
-            val idField = c.getDeclaredField(resName)
-            idField.getInt(idField)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            -1
+        binding.favoriteImageView.setOnClickListener {
+            val placeName = getString(
+                R.string.city_country,
+                currentWeatherJson.location.name,
+                currentWeatherJson.location.country
+            )
+            val decimalFormatSymbols = DecimalFormatSymbols.getInstance()
+            decimalFormatSymbols.decimalSeparator = '.'
+            val latString =
+                DecimalFormat("#.##", decimalFormatSymbols).format(currentWeatherJson.location.lat)
+            val lonString =
+                DecimalFormat("#.##", decimalFormatSymbols).format(currentWeatherJson.location.lon)
+            val temp = getString(R.string.degrees, currentWeatherJson.current.temp_c.roundToInt())
+            val place = FavouritePlace(
+                place_name = placeName,
+                latitude = latString,
+                longitude = lonString,
+                current_temp = temp
+            )
+            viewModel.addFavouritePlace(place)
         }
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val place = favouritesAdapter.currentList[viewHolder.adapterPosition]
+                viewModel.deleteFavouritePlace(place)
+                Toast.makeText(
+                    this@MainActivity,
+                    getString(R.string.place_deleted, place.place_name),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        ).attachToRecyclerView(binding.favouritesRecyclerView)
     }
 
-    private fun embedWeatherJson(weatherJson: WeatherJson) {
+    private fun setStartScreenState() {
+        binding.daysImageView.setImageResource(R.color.white)
+        binding.todayImageView.setImageResource(R.color.primary80)
+        binding.favouritesImageView.setImageResource(R.color.white)
+        binding.forecastDayRecyclerView.visibility = View.GONE
+        binding.favouritesRecyclerView.visibility = View.GONE
+        binding.scrollView.visibility = View.VISIBLE
+    }
 
-        val zoneId = ZoneId.of(weatherJson.location.tz_id)
+    private fun embedWeatherJson() {
+
+        val zoneId = ZoneId.of(currentWeatherJson.location.tz_id)
 
         with(binding) {
             cityNameWithCountry.text = getString(
                 R.string.city_country,
-                weatherJson.location.name,
-                weatherJson.location.country
+                currentWeatherJson.location.name,
+                currentWeatherJson.location.country
             )
             degreesTextView.text =
-                getString(R.string.degrees, weatherJson.current.temp_c.roundToInt())
+                getString(R.string.degrees, currentWeatherJson.current.temp_c.roundToInt())
             feelsLikeTextView.text =
-                getString(R.string.feels_like, weatherJson.current.feelslike_c.roundToInt())
+                getString(R.string.feels_like, currentWeatherJson.current.feelslike_c.roundToInt())
 
 
-            val today = weatherJson.forecast.forecastdays[0]
+            val today = currentWeatherJson.forecast.forecastdays[0]
             val sunrise =
                 today.date + today.astro.sunrise
             val sunriseEpoch =
@@ -364,10 +449,14 @@ class MainActivity : AppCompatActivity() {
                 LocalDateTime.parse(sunset, timeFormatter).atZone(zoneId).toEpochSecond()
 
             val dayOrNight =
-                getDayOrNight(weatherJson.current.last_updated_epoch, sunriseEpoch, sunsetEpoch)
+                getDayOrNight(
+                    currentWeatherJson.current.last_updated_epoch,
+                    sunriseEpoch,
+                    sunsetEpoch
+                )
 
             val condition = conditionsCodes.first {
-                it.code == weatherJson.current.condition.code
+                it.code == currentWeatherJson.current.condition.code
             }
             val languageJson = condition.languages.first {
                 it.lang_iso == languageCode
@@ -376,23 +465,28 @@ class MainActivity : AppCompatActivity() {
                 if (dayOrNight == "day") languageJson.day_text else languageJson.night_text
 
             conditionImageView.setImageResource(
-                getConditionIconId(weatherJson.current.condition.code, dayOrNight)
+                viewModel.getConditionIconId(currentWeatherJson.current.condition.code, dayOrNight)
             )
 
             dateTimeTextView.text = LocalDateTime
-                .parse(weatherJson.current.last_updated, fromDateTimeFormatter)
+                .parse(currentWeatherJson.current.last_updated, fromDateTimeFormatter)
                 .format(toDateTimeFormatter)
 
             val decimalFormatSymbols = DecimalFormatSymbols.getInstance()
             decimalFormatSymbols.decimalSeparator = '.'
-            val windSpeedMS = DecimalFormat("#.#", decimalFormatSymbols).format(weatherJson.current.wind_kph / 3.6)
+            val windSpeedMS = DecimalFormat(
+                "#.#",
+                decimalFormatSymbols
+            ).format(currentWeatherJson.current.wind_kph / 3.6)
             windSpeedTextView.text = getString(R.string.wind_speed_ms, windSpeedMS)
 
-            val dailyChanceOfRain = weatherJson.forecast.forecastdays[0].day.daily_chance_of_rain
-            val dailyChanceOfSnow = weatherJson.forecast.forecastdays[0].day.daily_chance_of_snow
-            val falloutChance = if(dailyChanceOfRain > 0){
+            val dailyChanceOfRain =
+                currentWeatherJson.forecast.forecastdays[0].day.daily_chance_of_rain
+            val dailyChanceOfSnow =
+                currentWeatherJson.forecast.forecastdays[0].day.daily_chance_of_snow
+            val falloutChance = if (dailyChanceOfRain > 0) {
                 dailyChanceOfRain
-            } else if(dailyChanceOfSnow > 0){
+            } else if (dailyChanceOfSnow > 0) {
                 dailyChanceOfSnow
             } else {
                 0
@@ -402,43 +496,37 @@ class MainActivity : AppCompatActivity() {
                 falloutChance
             )
 
-            val pressureMMHg = (weatherJson.current.pressure_mb * 0.75006).roundToInt()
+            val pressureMMHg = (currentWeatherJson.current.pressure_mb * 0.75006).roundToInt()
             pressureTextView.text = getString(R.string.pressure_mmhg, pressureMMHg)
 
-            uvTextView.text = weatherJson.current.uv.toString()
+            uvTextView.text = currentWeatherJson.current.uv.toString()
 
-            hourlyWeatherAdapter.submitList(getHourlyForecast(weatherJson))
+            hourlyWeatherAdapter.submitList(getHourlyForecast(currentWeatherJson))
 
-            val falloutChanceList = getFalloutChanceHourly(weatherJson)
+            val falloutChanceList = getFalloutChanceHourly()
             falloutTime1TextView.text = falloutChanceList[0].time
             falloutChance1ProgressBar.progress = falloutChanceList[0].chance
-            falloutChance1TextView.text = getString(R.string.chance_of_rain, falloutChanceList[0].chance)
+            falloutChance1TextView.text =
+                getString(R.string.chance_of_rain, falloutChanceList[0].chance)
             falloutTime2TextView.text = falloutChanceList[1].time
             falloutChance2ProgressBar.progress = falloutChanceList[1].chance
-            falloutChance2TextView.text = getString(R.string.chance_of_rain, falloutChanceList[1].chance)
+            falloutChance2TextView.text =
+                getString(R.string.chance_of_rain, falloutChanceList[1].chance)
             falloutTime3TextView.text = falloutChanceList[2].time
             falloutChance3ProgressBar.progress = falloutChanceList[2].chance
-            falloutChance3TextView.text = getString(R.string.chance_of_rain, falloutChanceList[2].chance)
+            falloutChance3TextView.text =
+                getString(R.string.chance_of_rain, falloutChanceList[2].chance)
             falloutTime4TextView.text = falloutChanceList[3].time
             falloutChance4ProgressBar.progress = falloutChanceList[3].chance
-            falloutChance4TextView.text = getString(R.string.chance_of_rain, falloutChanceList[3].chance)
+            falloutChance4TextView.text =
+                getString(R.string.chance_of_rain, falloutChanceList[3].chance)
 
             sunRiseTextView.text =
                 LocalDateTime.parse(sunrise, timeFormatter).format(toTimeFormatter)
             sunSetTextView.text = LocalDateTime.parse(sunset, timeFormatter).format(toTimeFormatter)
 
-            daysForecastAdapter.submitList(getDayForecastList(weatherJson))
+            daysForecastAdapter.submitList(getDayForecastList())
         }
-    }
-
-    private fun getConditionIconId(conditionCode: Int, day_or_night: String): Int {
-        val conditionIcon = conditionsCodes.first {
-            it.code == conditionCode
-        }.icon
-        return getResId(
-            "${day_or_night}_${conditionIcon}",
-            R.drawable::class.java
-        )
     }
 
     private fun getDayOrNight(timeEpoch: Long, sunriseEpoch: Long, sunsetEpoch: Long): String {
@@ -468,7 +556,7 @@ class MainActivity : AppCompatActivity() {
             sunsetTodayEpoch
         )
         val currentConditionIconId =
-            getConditionIconId(weatherJson.current.condition.code, dayOrNight)
+            viewModel.getConditionIconId(weatherJson.current.condition.code, dayOrNight)
 
         val currentHour = HourForecast(
             time = "Now",
@@ -487,7 +575,8 @@ class MainActivity : AppCompatActivity() {
             if (index >= startIdx) {
                 val dayOrNightHour =
                     getDayOrNight(hourJson.time_epoch, sunriseTodayEpoch, sunsetTodayEpoch)
-                val conditionIconId = getConditionIconId(hourJson.condition.code, dayOrNightHour)
+                val conditionIconId =
+                    viewModel.getConditionIconId(hourJson.condition.code, dayOrNightHour)
                 val time = LocalDateTime
                     .parse(hourJson.time, fromDateTimeFormatter)
                     .format(toTimeFormatter)
@@ -522,7 +611,8 @@ class MainActivity : AppCompatActivity() {
                     sunriseTomorrowEpoch,
                     sunsetTomorrowEpoch
                 )
-                val conditionIconId = getConditionIconId(hourJson.condition.code, dayOrNightHour)
+                val conditionIconId =
+                    viewModel.getConditionIconId(hourJson.condition.code, dayOrNightHour)
                 val time = LocalDateTime
                     .parse(hourJson.time, fromDateTimeFormatter)
                     .format(toTimeFormatter)
@@ -537,13 +627,13 @@ class MainActivity : AppCompatActivity() {
         return resultList.toList()
     }
 
-    private fun getFalloutChanceHourly(weatherJson: WeatherJson): List<FalloutChanceHourly> {
+    private fun getFalloutChanceHourly(): List<FalloutChanceHourly> {
 
         val resultList = mutableListOf<FalloutChanceHourly>()
 
-        val todayHours = weatherJson.forecast.forecastdays[0].hour
+        val todayHours = currentWeatherJson.forecast.forecastdays[0].hour
         val startIdx = todayHours.indexOfFirst {
-            it.time_epoch > weatherJson.current.last_updated_epoch
+            it.time_epoch > currentWeatherJson.current.last_updated_epoch
         }
 
         todayHours.forEachIndexed { index, hourJson ->
@@ -560,7 +650,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (resultList.count() < 4) {
-            val tomorrowHours = weatherJson.forecast.forecastdays[1].hour
+            val tomorrowHours = currentWeatherJson.forecast.forecastdays[1].hour
             for (index in 0 until 4 - resultList.count()) {
                 val hourJson = tomorrowHours[index]
                 val time = LocalDateTime
@@ -587,11 +677,11 @@ class MainActivity : AppCompatActivity() {
         return falloutChance
     }
 
-    private fun getDayForecastList(weatherJson: WeatherJson): List<DayForecast> {
+    private fun getDayForecastList(): List<DayForecast> {
 
         val resultList = mutableListOf<DayForecast>()
 
-        val daysForecastList = weatherJson.forecast.forecastdays
+        val daysForecastList = currentWeatherJson.forecast.forecastdays
 
         daysForecastList.forEachIndexed { index, dayWeatherJson ->
             val dateForecast = if (index == 0) {
@@ -610,7 +700,7 @@ class MainActivity : AppCompatActivity() {
                 it.lang_iso == languageCode
             }
             val conditionForecast = languageJson.day_text
-            val conditionIconId = getConditionIconId(condition.code, "day")
+            val conditionIconId = viewModel.getConditionIconId(condition.code, "day")
             val maxTemp = getString(R.string.degrees, dayWeatherJson.day.maxtemp_c.roundToInt())
             val minTemp = getString(R.string.degrees, dayWeatherJson.day.mintemp_c.roundToInt())
 
@@ -626,22 +716,5 @@ class MainActivity : AppCompatActivity() {
         }
 
         return resultList.toList()
-    }
-
-    private fun getJsonObject(resourcesRawFile: Int): List<ConditionFromFileJson> {
-        val inputStream = resources.openRawResource(resourcesRawFile)
-        val writer: Writer = StringWriter()
-        val buffer = CharArray(1024)
-        inputStream.use { inSt ->
-            val reader = BufferedReader(InputStreamReader(inSt, "UTF-8"))
-            var n: Int
-            while (reader.read(buffer).also { n = it } != -1) {
-                writer.write(buffer, 0, n)
-            }
-        }
-        val jsonString = writer.toString()
-        val gson = GsonBuilder()
-            .create()
-        return gson.fromJson(jsonString, Array<ConditionFromFileJson>::class.java).toList()
     }
 }
