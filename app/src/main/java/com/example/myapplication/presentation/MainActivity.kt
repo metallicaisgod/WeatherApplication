@@ -23,14 +23,7 @@ import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.domain.FavouritePlace
 import com.example.myapplication.domain.HourJson
 import com.example.myapplication.domain.WeatherJson
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.location.Priority
-import com.google.android.gms.location.SettingsClient
+import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -210,7 +203,7 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -258,7 +251,7 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
         return (permissionFineState == PackageManager.PERMISSION_GRANTED &&
-            permissionCoarseState == PackageManager.PERMISSION_GRANTED)
+                permissionCoarseState == PackageManager.PERMISSION_GRANTED)
     }
 
     private fun observeViewModel() {
@@ -400,7 +393,7 @@ class MainActivity : AppCompatActivity() {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
+                target: RecyclerView.ViewHolder,
             ): Boolean {
                 return false
             }
@@ -442,6 +435,27 @@ class MainActivity : AppCompatActivity() {
             feelsLikeTextView.text =
                 getString(R.string.feels_like, currentWeatherJson.current.feelslike_c.roundToInt())
 
+
+            val forecastSize = currentWeatherJson.forecast.forecastdays.size
+            val currentLocale = resources.configuration.locales.get(0)
+            if (currentLocale.language.equals("ru")) {
+                daysLabelTextView.text = when (forecastSize) {
+                    1 -> {
+                        "1 день"
+                    }
+                    in (2..4) -> {
+                        "$forecastSize дня"
+                    }
+                    else -> {
+                        "$forecastSize дней"
+                    }
+                }
+            } else {
+                daysLabelTextView.text = buildString {
+                    append(forecastSize)
+                    append(" days")
+                }
+            }
 
             val today = currentWeatherJson.forecast.forecastdays[0]
             val sunrise =

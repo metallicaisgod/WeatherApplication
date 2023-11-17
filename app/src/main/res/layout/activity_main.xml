@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:indeterminateDrawable="@drawable/spinner_ring"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,10 +66,9 @@
             android:layout_marginStart="10dp"
             android:src="@drawable/favorite_white"
             app:altSrc="@drawable/favorite_black"
-            app:layout_constraintStart_toEndOf="@+id/cityNameWithCountry"
-            app:layout_constraintTop_toTopOf="@+id/cityNameWithCountry"
             app:layout_constraintBottom_toBottomOf="@+id/cityNameWithCountry"
-            />
+            app:layout_constraintStart_toEndOf="@+id/cityNameWithCountry"
+            app:layout_constraintTop_toTopOf="@+id/cityNameWithCountry" />
 
         <androidx.constraintlayout.utils.widget.ImageFilterView
             android:id="@+id/locationImageView"
@@ -77,10 +77,9 @@
             android:layout_marginStart="10dp"
             android:src="@drawable/my_location_white"
             app:altSrc="@drawable/my_location_black"
-            app:layout_constraintStart_toEndOf="@+id/favoriteImageView"
-            app:layout_constraintTop_toTopOf="@+id/cityNameWithCountry"
             app:layout_constraintBottom_toBottomOf="@+id/cityNameWithCountry"
-            />
+            app:layout_constraintStart_toEndOf="@+id/favoriteImageView"
+            app:layout_constraintTop_toTopOf="@+id/cityNameWithCountry" />
 
         <EditText
             android:id="@+id/searchEditText"
@@ -214,7 +213,7 @@
             app:shapeAppearance="@style/ShapeAppearance.CircularBorderForOthers" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/daysLabelTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/_10_days"

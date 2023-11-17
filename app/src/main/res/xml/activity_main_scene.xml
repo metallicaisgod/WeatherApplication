@@ -158,6 +158,14 @@
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
             motion:visibilityMode="ignore" />
+        <Constraint
+            android:id="@+id/tvLabelForecast"
+            motion:layout_constraintEnd_toEndOf="@+id/daysImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toBottomOf="@+id/daysImageView"
+            motion:layout_constraintTop_toTopOf="@+id/daysImageView"
+            motion:layout_constraintStart_toStartOf="@+id/daysImageView" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">

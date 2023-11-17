@@ -1,6 +1,7 @@
 package com.example.myapplication.data
 
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -10,12 +11,12 @@ object RetrofitInstance {
     private var INSTANCE: Retrofit? = null
 
     private const val BASE_URL = "https://api.weatherapi.com/v1/"
-    private const val API_KEY = "your_api_key_here"
+    private const val API_KEY = "afbb696f168f482ca00131550231807"
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor { chain ->
             val request = chain.request().newBuilder()
-            val originalHttpUrl = chain.request().url()
+            val originalHttpUrl = chain.request().url
             val url = originalHttpUrl.newBuilder()
                 .addQueryParameter("key", API_KEY)
                 .addQueryParameter("days", "10")
@@ -24,7 +25,10 @@ object RetrofitInstance {
                 .build()
             request.url(url)
             chain.proceed(request.build())
-        }.build()
+        }.addInterceptor(
+            HttpLoggingInterceptor()
+            .setLevel(HttpLoggingInterceptor.Level.BODY))
+        .build()
 
     fun getService(): WeatherService{
 
